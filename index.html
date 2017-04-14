@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>url参数解表格</title>
+    <link rel="stylesheet" href="http://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
 </head>
 <body>
 <textarea id="urls" name="urls" cols="30" rows="10"></textarea>
-<table> </table>
+<table id="table"> </table>
     
-<script src="http://cmshow.qq.com/act_apollo/lib/zepto.js"></script>
+<script src="http://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="http://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 <script>
     $('textarea').on('change', handler);
     function handler() {
@@ -44,14 +46,14 @@
             });
             return '<tr>' + $.map(result, function(val) {
                     return '<td>' + (typeof val === 'undefined' ? '' : val) + '</td>';
-                    }).join('') + '<tr>';
+                    }).join('') + '</tr>';
         }).join('');
 
         var thead = $.map(tabs, function(tab) {
             return '<td>' + tab + '</td>';
         }).join('');
 
-        $('table').html('<thead><tr>' + thead + '</tr></thead><tbody>' + tbody + '</tbody>');
+        $('table').html('<thead><tr>' + thead + '</tr></thead><tbody>' + tbody + '</tbody>').DataTable();
     }
 </script>
 </body>
