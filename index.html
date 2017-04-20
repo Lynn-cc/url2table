@@ -3,18 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>url参数解表格</title>
-    <link rel="stylesheet" href="http://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+    <!-- <link rel="stylesheet" href="http://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"> -->
+    <link rel="stylesheet" href="https://getbootstrap.com/dist/css/bootstrap.min.css">
+    <style>
+        td {
+            max-width: 100px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    </style>
 </head>
 <body>
-<textarea id="urls" name="urls" cols="30" rows="10"></textarea>
-<table id="table"> </table>
+<h4>URL链接批量参数提取，转表格工具</h4>
+<p>在框内输入URL链接(一行一个URL)</p>
+<textarea id="urls" name="urls" cols="200" rows="10"></textarea>
+<button>确定</button>
+<table id="table" class="table  table-bordered table-responsive"></table>
     
 <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="http://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 <script>
+
+    var tabs = ['page_id', 'oper_id', 'oper_obj_id', 'oper_obj_type', 'ret_id'];
+    var dataTable;
     $('textarea').on('change', handler);
     function handler() {
         var urls = $('#urls').val().split('\n');
+        if (!urls.length) return;
         var table = [];
         $.each(urls, function(index, url) {
             var search = url.split('?')[1];
@@ -27,11 +42,12 @@
                 table[index][s[0]] = s[1];
             });
         });
-        buildTable(table)
+        // buildTable(table);
+        buildTableData(table);
     }
 
-    var tabs = ['page_id', 'oper_id', 'oper_obj_id', 'oper_obj_type', 'ret_id'];
 
+    /*
     function buildTable(data) {
         var tbody = $.map(data, function(line) {
             var result = [];
@@ -54,6 +70,31 @@
         }).join('');
 
         $('table').html('<thead><tr>' + thead + '</tr></thead><tbody>' + tbody + '</tbody>').DataTable();
+    }
+    */
+
+    function buildTableData(data) {
+        $.map(data, function(line) {
+            $.each(line, function(key, val) {
+                if (tabs.indexOf(key) === -1) {
+                    tabs.push(key);
+                }
+            });
+        });
+
+        var params = {
+            data: data,
+            columns: $.map(tabs, function(tab) {
+                return {
+                    data: tab,
+                    title: tab,
+                    defaultContent: ''
+                };
+            })
+        };
+
+        dataTable && dataTable.destroy();
+        dataTable = $('table').empty().DataTable(params);
     }
 </script>
 </body>
